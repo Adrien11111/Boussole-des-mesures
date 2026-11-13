@@ -1,13 +1,6 @@
-# Dev  : docker compose --profile dev  up        -> http://localhost:3000 (rechargement auto)
 # Prod : docker compose --profile prod up -d --build -> http://localhost:8080
+# Dev  : flutter run -d chrome (hot reload, hors Docker) — voir le Makefile
 services:
-  dev:
-    profiles: ["dev"]
-    build: { context: ., target: dev }
-    ports: ["3000:3000"]
-    volumes:
-      - ./index.html:/app/index.html
-
   prod:
     profiles: ["prod"]
     build: { context: ., target: prod }

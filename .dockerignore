@@ -1,2 +1,14 @@
 .git
-README.md
+.dart_tool
+.superpowers
+build
+legacy
+docs
+ios
+android
+macos
+windows
+linux
+test
+tool
+*.md
