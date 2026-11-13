@@ -3,15 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'application/state/app_state.dart';
+import 'presentation/design_system/app_theme.dart';
+import 'presentation/pages/page_for.dart' as pages;
 import 'presentation/router.dart';
 import 'presentation/state/providers.dart';
 
 class BoussoleApp extends ConsumerStatefulWidget {
-  const BoussoleApp({super.key, this.pageFor = _placeholder, this.themeBuilder});
+  const BoussoleApp({super.key, this.pageFor = pages.pageFor, this.themeBuilder = buildTheme});
   final Widget Function(AppView view) pageFor;
-  final ThemeData Function(Brightness)? themeBuilder;
-
-  static Widget _placeholder(AppView v) => Scaffold(body: Center(child: Text(v.name)));
+  final ThemeData Function(Brightness) themeBuilder;
 
   @override
   ConsumerState<BoussoleApp> createState() => _BoussoleAppState();
@@ -52,8 +52,8 @@ class _BoussoleAppState extends ConsumerState<BoussoleApp> {
         ThemePref.dark => ThemeMode.dark,
         ThemePref.auto => ThemeMode.system,
       },
-      theme: tb?.call(Brightness.light),
-      darkTheme: tb?.call(Brightness.dark),
+      theme: tb(Brightness.light),
+      darkTheme: tb(Brightness.dark),
     );
   }
 }

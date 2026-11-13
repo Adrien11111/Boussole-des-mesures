@@ -1,6 +1,7 @@
 import 'package:boussole/app.dart';
 import 'package:boussole/application/state/app_state.dart';
 import 'package:boussole/presentation/state/providers.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -16,7 +17,7 @@ void main() {
       catalogProvider.overrideWithValue(testCatalog),
     ]);
     addTearDown(c.dispose);
-    await tester.pumpWidget(UncontrolledProviderScope(container: c, child: const BoussoleApp()));
+    await tester.pumpWidget(UncontrolledProviderScope(container: c, child: BoussoleApp(pageFor: (v) => Text(v.name, textDirection: TextDirection.ltr))));
     await tester.pumpAndSettle();
     expect(find.text('home'), findsOneWidget);
     c.read(appControllerProvider.notifier).goTo(AppView.report);
