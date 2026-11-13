@@ -1,0 +1,20 @@
+# Dev  : docker compose --profile dev  up        -> http://localhost:3000 (rechargement auto)
+# Prod : docker compose --profile prod up -d --build -> http://localhost:8080
+services:
+  dev:
+    profiles: ["dev"]
+    build: { context: ., target: dev }
+    ports: ["3000:3000"]
+    volumes:
+      - ./index.html:/app/index.html
+
+  prod:
+    profiles: ["prod"]
+    build: { context: ., target: prod }
+    image: boussole-des-mesures:latest
+    ports: ["8080:8080"]
+    restart: unless-stopped
+    read_only: true
+    tmpfs: ["/tmp"]
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
