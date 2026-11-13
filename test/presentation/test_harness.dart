@@ -15,8 +15,9 @@ class Harness {
 }
 
 /// Monte [page] avec des faux adaptateurs et le catalogue de test (3 mesures).
-Future<Harness> pumpPage(WidgetTester t, Widget page, {AppState? initial}) async {
-  t.view.physicalSize = const Size(900, 3000);
+Future<Harness> pumpPage(WidgetTester t, Widget page,
+    {AppState? initial, Size size = const Size(900, 3000), double textScale = 1}) async {
+  t.view.physicalSize = size;
   t.view.devicePixelRatio = 1;
   addTearDown(t.view.reset);
   final c = ProviderContainer(overrides: [
@@ -29,7 +30,14 @@ Future<Harness> pumpPage(WidgetTester t, Widget page, {AppState? initial}) async
   addTearDown(c.dispose);
   await t.pumpWidget(UncontrolledProviderScope(
     container: c,
-    child: MaterialApp(theme: buildTheme(Brightness.light), home: page),
+    child: MaterialApp(
+      theme: buildTheme(Brightness.light),
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(textScale)),
+        child: child!,
+      ),
+      home: page,
+    ),
   ));
   await t.pumpAndSettle();
   return Harness(c);

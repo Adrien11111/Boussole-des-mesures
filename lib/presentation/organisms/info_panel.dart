@@ -48,7 +48,7 @@ class _InfoPanelState extends State<InfoPanel> {
                   child: Icon(_open ? Icons.remove : Icons.add, size: 14, color: t.ink),
                 ),
                 const SizedBox(width: 8),
-                Text('En savoir plus', style: bodyStyle(t.ink, 15.2, weight: 600)),
+                Expanded(child: Text('En savoir plus', style: bodyStyle(t.ink, 15.2, weight: 600))),
               ]),
             ),
           ),

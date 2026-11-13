@@ -14,7 +14,8 @@ class Gauge extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = AppTokens.of(context);
     return Semantics(
-      label: 'Accord global : $pct pour cent',
+      label: 'Accord global : $pct pour cent. $caption',
+      excludeSemantics: true,
       child: Column(children: [
         ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 340),

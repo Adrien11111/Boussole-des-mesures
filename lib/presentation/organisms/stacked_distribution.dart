@@ -18,8 +18,10 @@ class StackedDistribution extends StatelessWidget {
         decoration: BoxDecoration(color: c, borderRadius: BorderRadius.circular(3)));
     Widget item(Color c, String label, int n) => Row(mainAxisSize: MainAxisSize.min, children: [
           dot(c),
-          Text('$label · $n',
-              style: bodyStyle(t.ink, 14).copyWith(fontFeatures: const [FontFeature.tabularFigures()])),
+          Flexible(
+            child: Text('$label · $n',
+                style: bodyStyle(t.ink, 14).copyWith(fontFeatures: const [FontFeature.tabularFigures()])),
+          ),
         ]);
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Semantics(

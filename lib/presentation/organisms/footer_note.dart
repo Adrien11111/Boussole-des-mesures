@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -27,11 +26,17 @@ class FooterNote extends StatelessWidget {
                   'du livre, dont la plupart reprennent une puce déjà présente ici, et son décompte puce '
                   'par puce n’est pas publié ; l’écart de 35 n’a donc pas pu être rattaché à des mesures '
                   'précises. Les textes officiels font foi : '),
-          TextSpan(
-            text: 'programme « L’Avenir en commun », édition 2027',
-            style: style.copyWith(decoration: TextDecoration.underline, color: t.ink),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () => launchUrl(_url, mode: LaunchMode.externalApplication),
+          WidgetSpan(
+            alignment: PlaceholderAlignment.baseline,
+            baseline: TextBaseline.alphabetic,
+            child: Semantics(
+              link: true,
+              child: InkWell(
+                onTap: () => launchUrl(_url, mode: LaunchMode.externalApplication),
+                child: Text('programme « L’Avenir en commun », édition 2027',
+                    style: style.copyWith(decoration: TextDecoration.underline, color: t.ink)),
+              ),
+            ),
           ),
           const TextSpan(text: '.'),
         ])),

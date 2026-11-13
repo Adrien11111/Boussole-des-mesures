@@ -78,6 +78,7 @@ class CompareDetail extends StatelessWidget {
           Text('Comparer en détail avec', style: bodyStyle(t.ink, 14.4, weight: 600)),
           const SizedBox(height: 6),
           DropdownButtonFormField<int>(
+            isExpanded: true,
             initialValue: selected,
             items: [for (var k = 0; k < otherNames.length; k++) DropdownMenuItem(value: k, child: Text(otherNames[k]))],
             onChanged: (v) => onSelect(v ?? 0),

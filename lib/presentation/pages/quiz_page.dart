@@ -75,8 +75,10 @@ class QuizPage extends ConsumerWidget {
                           Icon(Icons.check, size: 14, color: t.ink),
                           const SizedBox(width: 4),
                         ],
-                        Text('« En savoir plus » ouvert par défaut',
-                            style: bodyStyle(s.openInfo ? t.ink : t.muted, 13.1)),
+                        Flexible(
+                          child: Text('« En savoir plus » ouvert par défaut',
+                              style: bodyStyle(s.openInfo ? t.ink : t.muted, 13.1)),
+                        ),
                       ]),
                     ),
                   ),
@@ -97,7 +99,7 @@ class QuizPage extends ConsumerWidget {
               onChanged: ctrl.setComment,
             ),
             const SizedBox(height: 14),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Wrap(alignment: WrapAlignment.spaceBetween, spacing: 10, runSpacing: 10, children: [
               AppButton(label: '← Précédente', ghost: true, onPressed: i == 0 ? null : ctrl.prev),
               AppButton(label: last ? 'Voir mon rapport' : (cur == null ? 'Passer →' : 'Suivante →'), onPressed: ctrl.next),
             ]),

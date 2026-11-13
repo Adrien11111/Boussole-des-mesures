@@ -64,8 +64,11 @@ class AnswerOption extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [text[0], text[1]],
+                            children: [
+                              Expanded(child: text[0]),
+                              const SizedBox(width: 8),
+                              text[1],
+                            ],
                           ),
                         ),
                       ),

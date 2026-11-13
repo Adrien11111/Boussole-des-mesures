@@ -37,7 +37,7 @@ class Topbar extends StatelessWidget {
               child: Row(mainAxisSize: MainAxisSize.min, children: [
                 Logo(color: t.ink),
                 const SizedBox(width: 8),
-                Text('Boussole des mesures', style: displayStyle(t.ink, 16.8)),
+                Flexible(child: Text('Boussole des mesures', style: displayStyle(t.ink, 16.8))),
               ]),
             ),
           ),
