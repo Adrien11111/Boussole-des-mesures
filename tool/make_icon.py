@@ -51,4 +51,11 @@ if __name__ == "__main__":
     compass(1.0, True).convert("RGB").save("assets/icon/icon.png")
     # Android adaptive : le dessin reste dans les 66 % centraux (zone sûre)
     compass(0.62, False).save("assets/icon/icon_foreground.png")
-    print("assets/icon/icon.png + icon_foreground.png générés")
+    # Linux : icône de fenêtre GTK (installée dans le bundle) + icône pour le fichier .desktop
+    import os
+    os.makedirs("linux/runner/resources", exist_ok=True)
+    os.makedirs("linux/packaging", exist_ok=True)
+    full = compass(1.0, True).convert("RGB").resize((512, 512), Image.LANCZOS)
+    full.save("linux/runner/resources/app_icon.png")
+    full.save("linux/packaging/fr.boussole.boussole.png")
+    print("assets/icon/*.png + icônes Linux générés")

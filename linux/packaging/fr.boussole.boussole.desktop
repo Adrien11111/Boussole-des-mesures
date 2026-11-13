@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Boussole des mesures
+Comment=Note les mesures d'un programme et compare tes avis avec ceux de tes proches
+Exec=boussole
+Icon=fr.boussole.boussole
+Terminal=false
+Categories=Utility;
+StartupWMClass=fr.boussole.boussole

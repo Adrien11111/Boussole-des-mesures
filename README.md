@@ -30,4 +30,20 @@ Les données (1034 mesures) sont dans `assets/measures.json` ; l'ancienne versio
 
 Autres plateformes : `flutter run -d ios|android|windows|linux`. Les builds Windows et Linux se font sur ces systèmes (Flutter ne cross-compile pas) ; Android demande d'accepter les licences : `flutter doctor --android-licenses`.
 
+### Linux
+
+`flutter build linux --release` (sur Linux : `clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev`). L'icône de fenêtre est installée dans le bundle (`data/icons/boussole.png`) et chargée au démarrage.
+Pour l'intégrer au lanceur (Wayland/GNOME, menu des applications), installer l'entrée de bureau et l'icône :
+
+```
+install -Dm644 linux/packaging/fr.boussole.boussole.desktop ~/.local/share/applications/fr.boussole.boussole.desktop
+install -Dm644 linux/packaging/fr.boussole.boussole.png ~/.local/share/icons/hicolor/512x512/apps/fr.boussole.boussole.png
+```
+
+Le fichier `.desktop` suppose que l'exécutable `boussole` est dans le `PATH` ; adapter `Exec=` sinon.
+
+### Logo
+
+`python3 tool/make_icon.py` redessine le logo (Pillow), puis `dart run flutter_launcher_icons` décline les icônes web, iOS, Android, macOS et Windows.
+
 Compatibilité : la clé de stockage (`boussole-mesures-v1`) et le format des codes `BM1.` sont ceux de l'ancienne version.

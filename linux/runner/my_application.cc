@@ -19,6 +19,16 @@ static void first_frame_cb(MyApplication* self, FlView* view) {
   gtk_widget_show(gtk_widget_get_toplevel(GTK_WIDGET(view)));
 }
 
+// Définit l'icône de la fenêtre depuis <dossier de l'exécutable>/data/icons/boussole.png.
+// Sans effet (et sans erreur) si le fichier est absent, par exemple en dehors d'un bundle.
+static void set_window_icon(GtkWindow* window) {
+  g_autofree gchar* exe = g_file_read_link("/proc/self/exe", nullptr);
+  if (exe == nullptr) return;
+  g_autofree gchar* dir = g_path_get_dirname(exe);
+  g_autofree gchar* icon = g_build_filename(dir, "data/icons/boussole.png", nullptr);
+  gtk_window_set_icon_from_file(window, icon, nullptr);
+}
+
 // Implements GApplication::activate.
 static void my_application_activate(GApplication* application) {
   MyApplication* self = MY_APPLICATION(application);
@@ -45,13 +55,14 @@ static void my_application_activate(GApplication* application) {
   if (use_header_bar) {
     GtkHeaderBar* header_bar = GTK_HEADER_BAR(gtk_header_bar_new());
     gtk_widget_show(GTK_WIDGET(header_bar));
-    gtk_header_bar_set_title(header_bar, "boussole");
+    gtk_header_bar_set_title(header_bar, "Boussole des mesures");
     gtk_header_bar_set_show_close_button(header_bar, TRUE);
     gtk_window_set_titlebar(window, GTK_WIDGET(header_bar));
   } else {
-    gtk_window_set_title(window, "boussole");
+    gtk_window_set_title(window, "Boussole des mesures");
   }
 
+  set_window_icon(window);
   gtk_window_set_default_size(window, 1280, 720);
 
   g_autoptr(FlDartProject) project = fl_dart_project_new();
