@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../application/ports/share_codec_port.dart';
+import '../../domain/services/text.dart';
 import '../../application/state/app_state.dart';
 import '../../application/usecases/add_other.dart';
 import '../../application/usecases/answer_measure.dart';
@@ -30,7 +31,7 @@ class AppController extends Notifier<AppState> {
   void prev() => _commit(step(state, ref.read(catalogProvider), -1));
   void setComment(String text) => _commit(uc.setComment(state, ref.read(catalogProvider), text));
   void setName(String name) =>
-      _commit(state.copyWith(name: name.length > 40 ? name.substring(0, 40) : name));
+      _commit(state.copyWith(name: truncateText(name, 40)));
   void cycleTheme() => _commit(state.copyWith(
       theme: ThemePref.values[(state.theme.index + 1) % ThemePref.values.length]));
   void toggleOpenInfo() => _commit(state.copyWith(openInfo: !state.openInfo));

@@ -30,7 +30,7 @@ class PrefsStorage implements StoragePort {
         },
         openInfo: o['openInfo'] == true,
         mode: o['mode'] == 'full' ? QuizMode.full : QuizMode.short,
-        answers: _intMap<int>(o['answers']),
+        answers: _answers(o['answers']),
         comments: _intMap<String>(o['comments']),
         pos: {
           QuizMode.short: pos['short'] is int ? pos['short'] as int : 0,
@@ -69,6 +69,10 @@ class PrefsStorage implements StoragePort {
     }
   }
 
+  /// Garde uniquement les réponses 0..5 ; le reste d'un état abîmé est conservé.
+  static Map<int, int> _answers(Object? v) =>
+      _intMap<int>(v)..removeWhere((id, val) => id < 0 || val < 0 || val > 5);
+
   static Map<int, T> _intMap<T>(Object? v) {
     final out = <int, T>{};
     if (v is Map) {
@@ -76,7 +80,6 @@ class PrefsStorage implements StoragePort {
         final id = int.tryParse('$k');
         if (id != null && val is T) out[id] = val;
       });
-      if (v.isNotEmpty && out.isEmpty) throw const FormatException('bad map');
     }
     return out;
   }

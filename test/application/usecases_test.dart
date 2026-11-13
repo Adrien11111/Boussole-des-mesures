@@ -8,6 +8,7 @@ import 'package:boussole/application/usecases/remove_other.dart';
 import 'package:boussole/application/usecases/reset_answers.dart';
 import 'package:boussole/application/usecases/set_comment.dart';
 import 'package:flutter_test/flutter_test.dart';
+import '../utf16.dart';
 import 'fakes.dart';
 
 void main() {
@@ -73,5 +74,11 @@ void main() {
     expect(r.comments, isEmpty);
     expect(r.pos, {QuizMode.short: 0, QuizMode.full: 0});
     expect(r.view, AppView.home);
+  });
+
+  test('setComment truncation never leaves a lone surrogate', () {
+    final c = setComment(s0, cat, 'a${'😀' * 300}').comments[0]!;
+    expect(c.length, lessThanOrEqualTo(500));
+    expect(isWellFormedUtf16(c), isTrue);
   });
 }

@@ -43,4 +43,12 @@ void main() {
     await pumpPage(t, const ComparePage(), initial: cmp(others: ['BM1.A']));
     expect(find.text('—'), findsWidgets);
   });
+
+  testWidgets('Retirer removes the right person even if a stored code is undecodable', (t) async {
+    final h = await pumpPage(t, const ComparePage(), initial: cmp(others: ['garbage', 'BM1.Ana', 'BM1.Bob']));
+    await t.ensureVisible(find.text('Retirer').last);
+    await t.tap(find.text('Retirer').last); // Bob
+    await t.pump();
+    expect(h.state.others, ['garbage', 'BM1.Ana']);
+  });
 }

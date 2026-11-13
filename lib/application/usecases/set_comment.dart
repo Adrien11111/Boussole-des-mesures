@@ -1,3 +1,4 @@
+import '../../domain/services/text.dart';
 import '../ports/catalog_port.dart';
 import '../state/app_state.dart';
 import 'measure_ids_for.dart';
@@ -10,7 +11,7 @@ AppState setComment(AppState s, Catalog cat, String text) {
   if (text.trim().isEmpty) {
     c.remove(id);
   } else {
-    c[id] = text.length > maxCommentLength ? text.substring(0, maxCommentLength) : text;
+    c[id] = truncateText(text, maxCommentLength);
   }
   return s.copyWith(comments: c);
 }

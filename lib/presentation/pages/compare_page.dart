@@ -5,6 +5,7 @@ import '../../application/ports/share_codec_port.dart';
 import '../../application/state/app_state.dart';
 import '../../domain/entities/person.dart';
 import '../../domain/entities/scale.dart';
+import '../../domain/services/comparison.dart';
 import '../../domain/services/report_builder.dart' show pctText;
 import '../../domain/services/scoring.dart';
 import '../../domain/services/similarity.dart';
@@ -31,9 +32,11 @@ class ComparePage extends ConsumerWidget {
     final myName = s.name.isEmpty ? 'Moi' : s.name;
 
     final others = <Person>[];
-    for (final code in s.others) {
+    final storedIndex = <int>[]; // position de chaque proche dans s.others
+    for (var k = 0; k < s.others.length; k++) {
       try {
-        others.add(codec.decode(code));
+        others.add(codec.decode(s.others[k]));
+        storedIndex.add(k);
       } on ShareCodeException {
         // code stocké illisible : ignoré
       }
@@ -47,7 +50,7 @@ class ComparePage extends ConsumerWidget {
       relatives: [for (final p in others) RelativeSummary(p.name, p.answers.length)],
       onCopy: ref.read(clipboardProvider).copy,
       onAdd: ctrl.addOther,
-      onRemove: ctrl.removeOther,
+      onRemove: (k) => ctrl.removeOther(storedIndex[k]),
     );
     if (others.isEmpty) return PageLayout(view: AppView.compare, children: [intro, footer]);
 
@@ -64,7 +67,6 @@ class ComparePage extends ConsumerWidget {
     }
 
     final common = [for (final id in allIds) if (isRated(s.answers[id]) && isRated(other.answers[id])) id];
-    int diff(int id) => (scale[s.answers[id]!].weight! - scale[other.answers[id]!].weight!).abs();
     ComparedMeasure cm(int id) => ComparedMeasure(
           where: where(id),
           text: cat.measures[id].text,
@@ -73,9 +75,8 @@ class ComparePage extends ConsumerWidget {
           myComment: s.comments[id],
           theirComment: other.comments[id],
         );
-    final apart = (common.where((id) => diff(id) >= 50).toList()..sort((a, b) => diff(b).compareTo(diff(a))))
-        .take(8).map(cm).toList();
-    final together = common.where((id) => diff(id) == 0 && s.answers[id] != 3).take(6).map(cm).toList();
+    final apart = mostDivergent(common, s.answers, other.answers, limit: 8).map(cm).toList();
+    final together = agreedIds(common, s.answers, other.answers, limit: 6).map(cm).toList();
 
     final names = [for (final p in ppl) p.name];
     return PageLayout(view: AppView.compare, children: [

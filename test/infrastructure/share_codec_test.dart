@@ -3,6 +3,8 @@ import 'package:boussole/application/ports/share_codec_port.dart';
 import 'package:boussole/infrastructure/codec/base64_share_codec.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../utf16.dart';
+
 /// Code produit par l'ancienne app (encodeCode de legacy/index.html) pour
 /// name "Léa", réponses {0:5, 1:2, 5:0}, commentaire {0: "ok é"}.
 const legacyCode =
@@ -64,5 +66,11 @@ void main() {
     expect(p.comments[0]!.length, 500);
     expect(p.name.length, 40);
     expect(codec.decode(codec.encode('', {}, {})).name, 'Sans nom');
+  });
+
+  test('truncation of comments and names never leaves a lone surrogate', () {
+    final p = codec.decode(codec.encode('a${'😀' * 50}', {}, {0: 'a${'😀' * 300}'}));
+    expect(isWellFormedUtf16(p.comments[0]!), isTrue);
+    expect(isWellFormedUtf16(p.name), isTrue);
   });
 }

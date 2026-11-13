@@ -24,13 +24,27 @@ class _BoussoleAppState extends ConsumerState<BoussoleApp> {
   void initState() {
     super.initState();
     // Bouton « retour » du navigateur / de l'OS : le chemin pilote la vue.
-    _router.routerDelegate.addListener(() {
-      final view = viewForPath(_router.routerDelegate.currentConfiguration.uri.path);
-      final ctrl = ref.read(appControllerProvider.notifier);
-      if (ref.read(appControllerProvider).view != view) ctrl.goTo(view);
+    _router.routerDelegate.addListener(_adoptRouteView);
+    // Au démarrage, l'URL (ex. rechargement sur /#/report) l'emporte sur l'état.
+    _adoptRouteView();
+  }
+
+  void _adoptRouteView() {
+    final view = viewForPath(_router.routerDelegate.currentConfiguration.uri.path);
+    // Hors phase de build : le routeur peut notifier pendant la construction de l'arbre.
+    Future.microtask(() {
+      if (!mounted) return;
+      if (ref.read(appControllerProvider).view != view) {
+        ref.read(appControllerProvider.notifier).goTo(view);
+      }
     });
-    // Vue pilotée par l'état (ex. fin du quiz) : le routeur suit.
-    WidgetsBinding.instance.addPostFrameCallback((_) => _syncRouter(ref.read(appControllerProvider).view));
+  }
+
+  @override
+  void dispose() {
+    _router.routerDelegate.removeListener(_adoptRouteView);
+    _router.dispose();
+    super.dispose();
   }
 
   void _syncRouter(AppView view) {

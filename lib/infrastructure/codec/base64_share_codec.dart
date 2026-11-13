@@ -3,6 +3,7 @@ import 'dart:convert';
 import '../../application/ports/share_codec_port.dart';
 import '../../domain/entities/person.dart';
 import '../../domain/entities/scale.dart';
+import '../../domain/services/text.dart';
 
 /// Format `BM1.` + base64url(JSON {n, r, c}), identique à l'ancienne app.
 class Base64ShareCodec implements ShareCodecPort {
@@ -53,13 +54,13 @@ class Base64ShareCodec implements ShareCodecPort {
       c.forEach((k, v) {
         final id = int.tryParse('$k');
         if (id != null && id >= 0 && id < measureCount && v is String) {
-          comments[id] = v.length > 500 ? v.substring(0, 500) : v;
+          comments[id] = truncateText(v, 500);
         }
       });
     }
     final n = o['n'];
     final name = n is String && n.trim().isNotEmpty
-        ? (n.trim().length > 40 ? n.trim().substring(0, 40) : n.trim())
+        ? truncateText(n.trim(), 40)
         : 'Sans nom';
     return Person(name: name, answers: answers, comments: comments);
   }
