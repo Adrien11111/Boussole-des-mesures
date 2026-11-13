@@ -2,6 +2,12 @@
 
 Application Flutter (web, iOS, Android, macOS, Windows, Linux) pour noter les mesures d'un programme, obtenir un rapport et comparer ses avis avec ceux de ses proches. Les réponses restent sur l'appareil ; elles ne sont partagées que si l'on envoie son code `BM1.…`.
 
+## Application en ligne
+
+https://adrien11111.github.io/Boussole-des-mesures/ — déployée automatiquement sur GitHub Pages à chaque push sur `main`
+(workflow `.github/workflows/pages.yml`). Une release GitHub avec un binaire par plateforme est publiée à chaque tag `v*`
+(`.github/workflows/release.yml`).
+
 ## Architecture
 
 ```
