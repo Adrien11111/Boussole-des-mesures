@@ -70,8 +70,14 @@ class QuizPage extends ConsumerWidget {
                     onTap: ctrl.toggleOpenInfo,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                      child: Text('${s.openInfo ? '✓ ' : ''}« En savoir plus » ouvert par défaut',
-                          style: bodyStyle(s.openInfo ? t.ink : t.muted, 13.1)),
+                      child: Row(mainAxisSize: MainAxisSize.min, children: [
+                        if (s.openInfo) ...[
+                          Icon(Icons.check, size: 14, color: t.ink),
+                          const SizedBox(width: 4),
+                        ],
+                        Text('« En savoir plus » ouvert par défaut',
+                            style: bodyStyle(s.openInfo ? t.ink : t.muted, 13.1)),
+                      ]),
                     ),
                   ),
                 ),

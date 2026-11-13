@@ -1,6 +1,7 @@
 import 'package:boussole/application/state/app_state.dart';
 import 'package:boussole/presentation/pages/quiz_page.dart';
 import 'package:flutter/material.dart';
+import 'package:boussole/presentation/design_system/tokens.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -53,5 +54,21 @@ void main() {
     expect(find.textContaining('Mesure 1 sur 2'), findsOneWidget);
     expect(find.text('ÉCONOMIE'), findsOneWidget);
     expect(find.text('Passer →'), findsOneWidget);
+  });
+
+  testWidgets('open-by-default toggle uses a Material check icon, not the ✓ glyph', (t) async {
+    await pumpPage(t, const QuizPage(), initial: quizState().copyWith(openInfo: true));
+    expect(find.byIcon(Icons.check), findsOneWidget);
+    expect(find.textContaining('✓'), findsNothing);
+  });
+
+  testWidgets('no check icon while the toggle is off', (t) async {
+    await pumpPage(t, const QuizPage(), initial: quizState());
+    expect(find.byIcon(Icons.check), findsNothing);
+  });
+
+  test('text styles fall back to the other bundled font for missing glyphs (e.g. ²)', () {
+    expect(bodyStyle(Colors.black, 16).fontFamilyFallback, contains(displayFont));
+    expect(displayStyle(Colors.black, 16).fontFamilyFallback, contains(bodyFont));
   });
 }

@@ -58,6 +58,7 @@ class AppTokens extends ThemeExtension<AppTokens> {
 TextStyle displayStyle(Color color, double size, {double weight = 700, double height = 1.1}) =>
     TextStyle(
       fontFamily: displayFont,
+      fontFamilyFallback: const [bodyFont], // glyphes absents : police embarquée, jamais le réseau
       fontSize: size,
       height: height,
       color: color,
@@ -69,6 +70,7 @@ TextStyle displayStyle(Color color, double size, {double weight = 700, double he
 TextStyle bodyStyle(Color color, double size, {double weight = 400, double height = 1.5}) =>
     TextStyle(
       fontFamily: bodyFont,
+      fontFamilyFallback: const [displayFont], // ex. « ² » absent d'Instrument Sans
       fontSize: size,
       height: height,
       color: color,
