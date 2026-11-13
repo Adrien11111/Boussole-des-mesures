@@ -3,6 +3,16 @@ import 'package:flutter/material.dart';
 const displayFont = 'Bricolage Grotesque';
 const bodyFont = 'Instrument Sans';
 
+/// Polices de secours embarquées (aucune requête réseau) : alphabets latin étendu, grec,
+/// cyrillique, arabe, hébreu, devanagari et emojis. Le chinois/japonais/coréen n'est pas couvert.
+const _symbolFallbacks = [
+  'Noto Sans',
+  'Noto Sans Arabic',
+  'Noto Sans Hebrew',
+  'Noto Sans Devanagari',
+  'Noto Emoji',
+];
+
 /// Largeur maximale de la colonne de contenu.
 const double contentMaxWidth = 760;
 /// Seuil à partir duquel le rail de réponse passe en 5 colonnes.
@@ -58,7 +68,7 @@ class AppTokens extends ThemeExtension<AppTokens> {
 TextStyle displayStyle(Color color, double size, {double weight = 700, double height = 1.1}) =>
     TextStyle(
       fontFamily: displayFont,
-      fontFamilyFallback: const [bodyFont], // glyphes absents : police embarquée, jamais le réseau
+      fontFamilyFallback: const [bodyFont, ..._symbolFallbacks],
       fontSize: size,
       height: height,
       color: color,
@@ -70,7 +80,7 @@ TextStyle displayStyle(Color color, double size, {double weight = 700, double he
 TextStyle bodyStyle(Color color, double size, {double weight = 400, double height = 1.5}) =>
     TextStyle(
       fontFamily: bodyFont,
-      fontFamilyFallback: const [displayFont], // ex. « ² » absent d'Instrument Sans
+      fontFamilyFallback: const [displayFont, ..._symbolFallbacks], // ex. « ² » absent d'Instrument Sans
       fontSize: size,
       height: height,
       color: color,
