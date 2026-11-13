@@ -1,5 +1,5 @@
 name: boussole
-description: "A new Flutter project."
+description: "Boussole des mesures : noter les mesures d’un programme, obtenir un rapport et comparer ses avis avec ses proches."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev

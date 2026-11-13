@@ -15,6 +15,8 @@ AppView viewForPath(String path) =>
 
 /// Construit le routeur. [pageFor] fournit l'écran de chaque vue.
 GoRouter buildRouter(Widget Function(AppView view) pageFor) => GoRouter(
+      // URL inconnue : retour à l'accueil, requête et chemin parasites effacés.
+      redirect: (_, state) => viewPaths.containsValue(state.uri.path) ? null : viewPaths[AppView.home],
       routes: [
         for (final e in viewPaths.entries)
           GoRoute(
