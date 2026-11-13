@@ -1,0 +1,109 @@
+name: Release
+
+# Publie une release GitHub avec un binaire par plateforme.
+#   - sur un tag « v* » (ex. : git tag v1.0.0 && git push origin v1.0.0)
+#   - ou à la main : onglet Actions > Release > Run workflow (builds seulement, sans publication)
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+env:
+  FLUTTER_VERSION: '3.44.7'
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '17' }
+      - uses: subosito/flutter-action@v2
+        with: { flutter-version: '${{ env.FLUTTER_VERSION }}', channel: stable, cache: true }
+      - run: flutter pub get
+      - run: flutter test
+      - run: flutter build apk --release
+      - run: cp build/app/outputs/flutter-apk/app-release.apk boussole-android.apk
+      - uses: actions/upload-artifact@v4
+        with: { name: android, path: boussole-android.apk }
+
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with: { flutter-version: '${{ env.FLUTTER_VERSION }}', channel: stable, cache: true }
+      - run: flutter pub get
+      - run: flutter build web --release --no-web-resources-cdn
+      - run: cd build/web && zip -qr ../../boussole-web.zip .
+      - uses: actions/upload-artifact@v4
+        with: { name: web, path: boussole-web.zip }
+
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev
+      - uses: subosito/flutter-action@v2
+        with: { flutter-version: '${{ env.FLUTTER_VERSION }}', channel: stable, cache: true }
+      - run: flutter pub get
+      - run: flutter build linux --release
+      - run: tar -czf boussole-linux-x64.tar.gz -C build/linux/x64/release/bundle .
+      - uses: actions/upload-artifact@v4
+        with: { name: linux, path: boussole-linux-x64.tar.gz }
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with: { flutter-version: '${{ env.FLUTTER_VERSION }}', channel: stable, cache: true }
+      - run: flutter pub get
+      - run: flutter build windows --release
+      - run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath boussole-windows-x64.zip
+        shell: pwsh
+      - uses: actions/upload-artifact@v4
+        with: { name: windows, path: boussole-windows-x64.zip }
+
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with: { flutter-version: '${{ env.FLUTTER_VERSION }}', channel: stable, cache: true }
+      - run: flutter pub get
+      - run: flutter build macos --release
+      - run: ditto -c -k --keepParent build/macos/Build/Products/Release/boussole.app boussole-macos.zip
+      - uses: actions/upload-artifact@v4
+        with: { name: macos, path: boussole-macos.zip }
+
+  ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with: { flutter-version: '${{ env.FLUTTER_VERSION }}', channel: stable, cache: true }
+      - run: flutter pub get
+      - run: flutter build ios --release --no-codesign
+      # .ipa NON signé : à re-signer (Xcode, AltStore, Sideloadly…) avant installation sur un appareil.
+      - run: |
+          mkdir Payload
+          cp -R build/ios/iphoneos/Runner.app Payload/
+          zip -qr boussole-ios-unsigned.ipa Payload
+      - uses: actions/upload-artifact@v4
+        with: { name: ios, path: boussole-ios-unsigned.ipa }
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [android, web, linux, windows, macos, ios]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { path: dist, merge-multiple: true }
+      - run: ls -la dist
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true
