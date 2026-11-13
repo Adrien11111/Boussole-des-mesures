@@ -3,7 +3,7 @@ import '../state/app_state.dart';
 
 /// Valide le code (lève [ShareCodeException]), le normalise, et remplace
 /// l'entrée existante portant le même prénom.
-AppState addOther(AppState s, ShareCodecPort codec, String rawCode) {
+AppState addOtherCode(AppState s, ShareCodecPort codec, String rawCode) {
   final person = codec.decode(rawCode);
   final code = rawCode.trim().replaceAll(RegExp(r'\s+'), '');
   final others = List<String>.of(s.others);

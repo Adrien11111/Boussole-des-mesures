@@ -46,21 +46,21 @@ void main() {
   });
 
   test('addOther replaces a code with the same first name', () {
-    var s = addOther(s0, FakeCodec(), 'BM1.Léa');
-    s = addOther(s, FakeCodec(), ' BM1.\nLéa ');
-    s = addOther(s, FakeCodec(), 'BM1.Tom');
+    var s = addOtherCode(s0, FakeCodec(), 'BM1.Léa');
+    s = addOtherCode(s, FakeCodec(), ' BM1.\nLéa ');
+    s = addOtherCode(s, FakeCodec(), 'BM1.Tom');
     expect(s.others, ['BM1.Léa', 'BM1.Tom']);
   });
 
   test('addOther with an invalid code throws and leaves state untouched', () {
-    expect(() => addOther(s0, FakeCodec(), 'zzz'), throwsA(isA<ShareCodeException>()));
+    expect(() => addOtherCode(s0, FakeCodec(), 'zzz'), throwsA(isA<ShareCodeException>()));
     expect(s0.others, isEmpty);
   });
 
   test('removeOther drops the code and resets cmpWith', () {
-    final s = addOther(addOther(s0, FakeCodec(), 'BM1.A'), FakeCodec(), 'BM1.B')
+    final s = addOtherCode(addOtherCode(s0, FakeCodec(), 'BM1.A'), FakeCodec(), 'BM1.B')
         .copyWith(cmpWith: 1);
-    final r = removeOther(s, 0);
+    final r = removeOtherAt(s, 0);
     expect(r.others, ['BM1.B']);
     expect(r.cmpWith, 0);
   });
